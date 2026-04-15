@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# GSD planning files — local only, not committed
+.planning/
+.claude/
