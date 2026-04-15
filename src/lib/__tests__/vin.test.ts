@@ -19,7 +19,11 @@ describe('normalizeVinInput', () => {
     { name: 'strips dashes', input: '5YJ-3E1EA4', expected: '5YJ3E1EA4' },
     { name: 'strips mixed whitespace and dashes', input: ' 5YJ 3E-1 EA4 ', expected: '5YJ3E1EA4' },
     { name: 'handles empty string', input: '', expected: '' },
-    { name: 'already normalized passes through', input: '5YJ3E1EA4PF789500', expected: '5YJ3E1EA4PF789500' },
+    {
+      name: 'already normalized passes through',
+      input: '5YJ3E1EA4PF789500',
+      expected: '5YJ3E1EA4PF789500',
+    },
   ])('$name', ({ input, expected }) => {
     expect(normalizeVinInput(input)).toBe(expected)
   })
@@ -152,7 +156,7 @@ describe('validateVin — non-Tesla WMI', () => {
 
 describe('validateVin — I/O/Q rejection', () => {
   it.each([
-    { name: 'VIN with I', raw: '5YJI123456789012' + '3' },  // 17 chars total won't matter — we care about the error code
+    { name: 'VIN with I', raw: '5YJI123456789012' + '3' }, // 17 chars total won't matter — we care about the error code
     { name: 'VIN with O', raw: '5YJO123456789012' + '3' },
     { name: 'VIN with Q', raw: '5YJQ123456789012' + '3' },
     { name: 'VIN with multiple I+O+Q', raw: '5YJIIOQEAPF78950' },
@@ -249,20 +253,32 @@ describe('validateVin — normalization', () => {
 
 describe('parseVin — field extraction', () => {
   it('Fremont Model Y MY2023', () => {
-    const vin = makeVin({ wmi: '5YJ', pos8: 'F', modelYearChar: 'P', plantCode: 'F', serial: '789500' })
+    const vin = makeVin({
+      wmi: '5YJ',
+      pos8: 'F',
+      modelYearChar: 'P',
+      plantCode: 'F',
+      serial: '789500',
+    })
     const parsed = parseVin(vin)
     expect(parsed.vin).toBe(vin)
-    expect(parsed.model).toBe('Y')         // WMI_TO_DEFAULT_MODEL['5YJ']
-    expect(parsed.modelYear).toBe(2023)    // MODEL_YEAR_MAP['P']
-    expect(parsed.market).toBe('US')       // WMI_TO_MARKET['5YJ']
-    expect(parsed.plant).toBe('Fremont')   // PLANT_CODE_MAP['F']
+    expect(parsed.model).toBe('Y') // WMI_TO_DEFAULT_MODEL['5YJ']
+    expect(parsed.modelYear).toBe(2023) // MODEL_YEAR_MAP['P']
+    expect(parsed.market).toBe('US') // WMI_TO_MARKET['5YJ']
+    expect(parsed.plant).toBe('Fremont') // PLANT_CODE_MAP['F']
     expect(parsed.plantCode).toBe('F')
     expect(parsed.serial).toBe('789500')
     expect(parsed.trim).toBe('Long Range') // TRIM_MAP['F']
   })
 
   it('Berlin Model Y MY2024 (plant code B)', () => {
-    const vin = makeVin({ wmi: 'XP7', pos8: 'G', modelYearChar: 'R', plantCode: 'B', serial: '000001' })
+    const vin = makeVin({
+      wmi: 'XP7',
+      pos8: 'G',
+      modelYearChar: 'R',
+      plantCode: 'B',
+      serial: '000001',
+    })
     const parsed = parseVin(vin)
     expect(parsed.market).toBe('EU')
     expect(parsed.plant).toBe('Berlin')

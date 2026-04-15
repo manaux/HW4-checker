@@ -12,7 +12,12 @@
  * All functions are pure (no side effects, no network, no DOM).
  */
 
-import type { ParsedVin, ValidationResult, ValidationError, ValidationWarning } from '../types/index'
+import type {
+  ParsedVin,
+  ValidationResult,
+  ValidationError,
+  ValidationWarning,
+} from '../types/index'
 import {
   TESLA_WMIS,
   MODEL_YEAR_MAP,
@@ -150,7 +155,8 @@ export function validateVin(raw: string): ValidationResult {
   if (!isTeslaWmi) {
     errors.push({
       code: 'NOT_TESLA_WMI',
-      message: "This doesn't look like a Tesla VIN. Tesla VINs start with 5YJ, 7SA, LRW, XP7, SFZ, or 7G2.",
+      message:
+        "This doesn't look like a Tesla VIN. Tesla VINs start with 5YJ, 7SA, LRW, XP7, SFZ, or 7G2.",
       foundWMI: wmi,
     })
   }
@@ -172,9 +178,7 @@ export function validateVin(raw: string): ValidationResult {
     })
   }
 
-  return warnings.length > 0
-    ? { ok: true, vin, warnings }
-    : { ok: true, vin }
+  return warnings.length > 0 ? { ok: true, vin, warnings } : { ok: true, vin }
 }
 
 // ---------------------------------------------------------------------------

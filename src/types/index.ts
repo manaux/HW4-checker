@@ -118,8 +118,12 @@ export type ValidationError =
  * Soft validation warning. Does not prevent ok: true.
  * Currently only used for ISO 3779 check-digit mismatches.
  */
-export type ValidationWarning =
-  | { code: 'CHECK_DIGIT'; message: string; expected: string; actual: string }
+export type ValidationWarning = {
+  code: 'CHECK_DIGIT'
+  message: string
+  expected: string
+  actual: string
+}
 
 /**
  * Return type of validateVin().
