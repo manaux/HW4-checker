@@ -100,3 +100,60 @@ export interface HW4RulesFile {
   _sources: SourceMap
   rules: CutoffRule[]
 }
+
+// ---------------------------------------------------------------------------
+// Phase 2: VIN validation types
+// ---------------------------------------------------------------------------
+
+/**
+ * Hard validation failure. At least one error means ok: false.
+ * Multiple errors may be returned simultaneously (e.g. wrong length AND invalid chars).
+ */
+export type ValidationError =
+  | { code: 'LENGTH'; message: string; actualLength: number }
+  | { code: 'INVALID_CHAR'; message: string; chars: string[] }
+  | { code: 'NOT_TESLA_WMI'; message: string; foundWMI: string }
+
+/**
+ * Soft validation warning. Does not prevent ok: true.
+ * Currently only used for ISO 3779 check-digit mismatches.
+ */
+export type ValidationWarning =
+  | { code: 'CHECK_DIGIT'; message: string; expected: string; actual: string }
+
+/**
+ * Return type of validateVin().
+ *
+ *  ok: true  → VIN passed all hard checks. `vin` is normalized (uppercased, stripped).
+ *              `warnings` may contain a CHECK_DIGIT warning.
+ *  ok: false → at least one hard validation error. `errors` array is non-empty.
+ */
+export type ValidationResult =
+  | { ok: true; vin: string; warnings?: ValidationWarning[] }
+  | { ok: false; errors: ValidationError[] }
+
+// ---------------------------------------------------------------------------
+// Phase 2: HW4 verdict result
+// ---------------------------------------------------------------------------
+
+/**
+ * Return type of determineHw4(). Always contains a matchedRule (never null).
+ * The synthetic _NO_MATCH_FALLBACK_RULE is used when no rule in hw4Rules.json
+ * matches the (model, plant, modelYear) combination.
+ */
+export interface Hw4Result {
+  verdict: Hw4Verdict
+  /** The rule that produced this verdict. Never null. */
+  matchedRule: CutoffRule
+  /** Copied from matchedRule.confidence. */
+  confidence: 'high' | 'medium' | 'low'
+  /** Human-readable explanation. Copied from matchedRule.reasoning or fallback string. */
+  reasoning: string
+  /**
+   * Optional caveat for the UI to display:
+   *   'no'    → retrofit caveat (HW4-06)
+   *   'maybe' → Software-screen instructions (HW4-07)
+   *   'yes'   → undefined
+   */
+  caveat?: string
+}
