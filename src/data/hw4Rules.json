@@ -1,0 +1,629 @@
+{
+  "_sources": {
+    "nhtsa-vpic": {
+      "url": "https://vpic.nhtsa.dot.gov/",
+      "title": "NHTSA vPIC — WMI Registry",
+      "accessedDate": "2026-04-15"
+    },
+    "iso-3779": {
+      "url": "https://www.iso.org/standard/52200.html",
+      "title": "ISO 3779:2009 — Road vehicles — Vehicle identification number (VIN)",
+      "accessedDate": "2026-04-15"
+    },
+    "teslatap": {
+      "url": "https://teslatap.com/vin-decoder/",
+      "title": "TeslaTap VIN Decoder — Community Reference",
+      "accessedDate": "2026-04-15"
+    },
+    "tmc-hw4-thread": {
+      "url": "https://teslamotorsclub.com/tmc/threads/hardware-4-vin-numbers.307808/",
+      "title": "Tesla Motors Club — Hardware 4 VIN Numbers Thread",
+      "accessedDate": "2026-04-15"
+    },
+    "electrive-highland": {
+      "url": "https://www.electrive.com/2023/08/04/tesla-prepares-to-manufacture-model-3-highland/",
+      "title": "Electrive — Tesla Prepares to Manufacture Model 3 Highland",
+      "accessedDate": "2026-04-15"
+    },
+    "autopilotreview-hw4": {
+      "url": "https://www.autopilotreview.com/tesla-hardware-4-rolling-out-to-new-vehicles/",
+      "title": "Autopilot Review — Tesla Hardware 4 Rolling Out to New Vehicles",
+      "accessedDate": "2026-04-15"
+    },
+    "tmc-berlin-hw3-2024": {
+      "url": "https://teslamotorsclub.com/tmc/threads/did-my-2024-my-lr-come-with-hw3.331839/",
+      "title": "Tesla Motors Club — Berlin MY2024 Model Y HW3 Delivery Thread",
+      "accessedDate": "2026-04-15"
+    },
+    "drive-tesla-7sa": {
+      "url": "https://driveteslacanada.ca/news/tesla-updates-vin-manufacturer-code-7sa-model-x-y/",
+      "title": "Drive Tesla Canada — Tesla Updates VIN Manufacturer Code to 7SA",
+      "accessedDate": "2026-04-15"
+    },
+    "dirty-tesla-serials": {
+      "url": "https://x.com/DirtyTesLa/status/1684918190646669313",
+      "title": "DirtyTesLa — HW4 Serial Cutoff Numbers (community research)",
+      "accessedDate": "2026-04-15"
+    },
+    "tesla-china-feb2024": {
+      "url": "https://www.tesla.com/en_CN/blog/",
+      "title": "Tesla China — HW4 Standard for New Deliveries Announcement (Feb 1, 2024)",
+      "accessedDate": "2026-04-15"
+    }
+  },
+  "rules": [
+    {
+      "model": "Y",
+      "plant": "__pre2020__",
+      "modelYear": 0,
+      "verdict": "no",
+      "source": "nhtsa-vpic",
+      "confidence": "high",
+      "reasoning": "Sentinel catch-all rule: any Tesla VIN with modelYear < 2020 predates HW4. Phase 2 determineHw4() must check modelYear === 0 and apply this rule to all parsed years < 2020. HW1/HW2/HW2.5 era."
+    },
+    {
+      "model": "S",
+      "plant": "__pre2020__",
+      "modelYear": 0,
+      "verdict": "no",
+      "source": "nhtsa-vpic",
+      "confidence": "high",
+      "reasoning": "Sentinel catch-all: Model S pre-2020 is HW1/HW2/HW2.5/HW3 — never HW4."
+    },
+    {
+      "model": "3",
+      "plant": "__pre2020__",
+      "modelYear": 0,
+      "verdict": "no",
+      "source": "nhtsa-vpic",
+      "confidence": "high",
+      "reasoning": "Sentinel catch-all: Model 3 pre-2020 is HW2.5/HW3 — never HW4."
+    },
+    {
+      "model": "X",
+      "plant": "__pre2020__",
+      "modelYear": 0,
+      "verdict": "no",
+      "source": "nhtsa-vpic",
+      "confidence": "high",
+      "reasoning": "Sentinel catch-all: Model X pre-2020 is HW2.5/HW3 — never HW4."
+    },
+    {
+      "model": "Cybertruck",
+      "plant": "Austin",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "autopilotreview-hw4",
+      "confidence": "high",
+      "reasoning": "Cybertruck (WMI 7G2, Austin plant) launched with HW4 in November 2023 as MY2024. All Cybertruck VINs are HW4. Fast-path in Phase 2: if model === Cybertruck return yes immediately."
+    },
+    {
+      "model": "Cybertruck",
+      "plant": "Austin",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "autopilotreview-hw4",
+      "confidence": "high",
+      "reasoning": "Cybertruck MY2025 continues HW4. All Cybertruck VINs are HW4 by design."
+    },
+    {
+      "model": "Cybertruck",
+      "plant": "Austin",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "autopilotreview-hw4",
+      "confidence": "high",
+      "reasoning": "Cybertruck MY2026 continues HW4. All Cybertruck VINs are HW4."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2020,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Fremont MY2020 (VIN year char L): all units shipped with HW3. HW4 did not exist in production in 2020."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2021,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Fremont MY2021 (year char M): all units are HW3. No HW4 in production."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Fremont MY2022 (year char N): all units are HW3. HW4 rollout did not begin until 2023."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2023,
+      "verdict": "no",
+      "serialRange": { "max": 789424 },
+      "source": "dirty-tesla-serials",
+      "confidence": "low",
+      "reasoning": "Model Y Fremont MY2023: serials below 789,425 are definitively HW3. Community serial cutoff ~789,500; widened by -75 per conservative policy. LOW confidence: community-sourced only."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2023,
+      "verdict": "maybe",
+      "serialRange": { "min": 789425, "max": 789575 },
+      "source": "dirty-tesla-serials",
+      "confidence": "low",
+      "reasoning": "Model Y Fremont MY2023: serial range 789,425–789,575 is the HW3/HW4 transition boundary. Community cutoff ~789,500 ±75. Check Controls > Software > Additional Vehicle Information."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2023,
+      "verdict": "yes",
+      "serialRange": { "min": 789576 },
+      "source": "dirty-tesla-serials",
+      "confidence": "low",
+      "reasoning": "Model Y Fremont MY2023: serials above 789,575 are definitively HW4. Community cutoff ~789,500 widened +75."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Fremont MY2024: entire year is HW4. The HW3/HW4 transition at Fremont completed during MY2023 production."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Fremont MY2025: HW4 standard. All units manufactured with HW4."
+    },
+    {
+      "model": "Y",
+      "plant": "Fremont",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model Y Fremont MY2026: HW4 expected to continue. No evidence of hardware change. MEDIUM confidence as MY2026 is very recent production."
+    },
+    {
+      "model": "Y",
+      "plant": "Shanghai",
+      "modelYear": 2020,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Shanghai (LRW WMI) MY2020: HW3. Giga Shanghai Model Y production began 2021 for domestic; 2020 units are HW3."
+    },
+    {
+      "model": "Y",
+      "plant": "Shanghai",
+      "modelYear": 2021,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Shanghai MY2021: all HW3. HW4 not in Shanghai production yet."
+    },
+    {
+      "model": "Y",
+      "plant": "Shanghai",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Shanghai MY2022: all HW3. HW4 rollout began at Shanghai in 2023."
+    },
+    {
+      "model": "Y",
+      "plant": "Shanghai",
+      "modelYear": 2023,
+      "verdict": "maybe",
+      "source": "tmc-hw4-thread",
+      "confidence": "low",
+      "reasoning": "Model Y Shanghai MY2023: whole-year maybe. No reliable serial-range cutoff data exists for Shanghai MY2023 Model Y. Some early 2023 units may be HW3, later units may be HW4. Check Software screen."
+    },
+    {
+      "model": "Y",
+      "plant": "Shanghai",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "tesla-china-feb2024",
+      "confidence": "medium",
+      "reasoning": "Model Y Shanghai MY2024: Tesla China announced Feb 1, 2024 that all new deliveries include HW4 standard. MEDIUM confidence: primary announcement not directly verified from an archived source."
+    },
+    {
+      "model": "Y",
+      "plant": "Shanghai",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tesla-china-feb2024",
+      "confidence": "medium",
+      "reasoning": "Model Y Shanghai MY2025: HW4 continues post-Feb 2024 announcement. MEDIUM confidence."
+    },
+    {
+      "model": "Y",
+      "plant": "Shanghai",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tesla-china-feb2024",
+      "confidence": "medium",
+      "reasoning": "Model Y Shanghai MY2026: HW4 continues. MEDIUM confidence as very recent production."
+    },
+    {
+      "model": "Y",
+      "plant": "Berlin",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Berlin (XP7 WMI) MY2022: Giga Berlin opened March 2022 with HW3. All 2022 Berlin Model Y units are HW3."
+    },
+    {
+      "model": "Y",
+      "plant": "Berlin",
+      "modelYear": 2023,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Berlin MY2023: all HW3. HW4 rollout at Berlin had not begun for standard deliveries by end of MY2023."
+    },
+    {
+      "model": "Y",
+      "plant": "Berlin",
+      "modelYear": 2024,
+      "verdict": "maybe",
+      "source": "tmc-berlin-hw3-2024",
+      "confidence": "medium",
+      "reasoning": "Model Y Berlin MY2024: locked as maybe. A confirmed April 2024 delivery from Giga Berlin carried HW3 despite being MY2024. Mixed HW3/HW4 deliveries occurred throughout 2024. Check Controls > Software > Additional Vehicle Information."
+    },
+    {
+      "model": "Y",
+      "plant": "Berlin",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model Y Berlin MY2025: expected to be HW4 standard by 2025 production. MEDIUM confidence — Berlin transition timeline is less well-documented than Fremont."
+    },
+    {
+      "model": "Y",
+      "plant": "Berlin",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model Y Berlin MY2026: HW4 continues. MEDIUM confidence as very recent production."
+    },
+    {
+      "model": "Y",
+      "plant": "Austin",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Austin (7SA WMI, some Fremont 5YJ also covers Austin) MY2022: Giga Texas opened April 2022 with HW3. All 2022 Austin Model Y units are HW3."
+    },
+    {
+      "model": "Y",
+      "plant": "Austin",
+      "modelYear": 2023,
+      "verdict": "no",
+      "serialRange": { "max": 131124 },
+      "source": "dirty-tesla-serials",
+      "confidence": "low",
+      "reasoning": "Model Y Austin MY2023: serials below 131,125 are definitively HW3. Community cutoff ~131,200 widened -75. LOW confidence: community-sourced only."
+    },
+    {
+      "model": "Y",
+      "plant": "Austin",
+      "modelYear": 2023,
+      "verdict": "maybe",
+      "serialRange": { "min": 131125, "max": 131275 },
+      "source": "dirty-tesla-serials",
+      "confidence": "low",
+      "reasoning": "Model Y Austin MY2023: serial range 131,125–131,275 is the HW3/HW4 boundary zone. Community cutoff ~131,200 ±75. Check Controls > Software > Additional Vehicle Information."
+    },
+    {
+      "model": "Y",
+      "plant": "Austin",
+      "modelYear": 2023,
+      "verdict": "yes",
+      "serialRange": { "min": 131276 },
+      "source": "dirty-tesla-serials",
+      "confidence": "low",
+      "reasoning": "Model Y Austin MY2023: serials above 131,275 are definitively HW4. Community cutoff ~131,200 widened +75."
+    },
+    {
+      "model": "Y",
+      "plant": "Austin",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Austin MY2024: entire year is HW4. Transition at Giga Texas completed during MY2023."
+    },
+    {
+      "model": "Y",
+      "plant": "Austin",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model Y Austin MY2025: HW4 standard. All units manufactured with HW4."
+    },
+    {
+      "model": "Y",
+      "plant": "Austin",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model Y Austin MY2026: HW4 continues. MEDIUM confidence as very recent production."
+    },
+    {
+      "model": "3",
+      "plant": "Fremont",
+      "modelYear": 2020,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Fremont (5YJ WMI) MY2020: all HW3. HW4 did not exist in production in 2020."
+    },
+    {
+      "model": "3",
+      "plant": "Fremont",
+      "modelYear": 2021,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Fremont MY2021: all HW3."
+    },
+    {
+      "model": "3",
+      "plant": "Fremont",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Fremont MY2022: all HW3. Highland (Model 3 refresh) did not reach Fremont until 2024."
+    },
+    {
+      "model": "3",
+      "plant": "Fremont",
+      "modelYear": 2023,
+      "verdict": "no",
+      "source": "electrive-highland",
+      "confidence": "high",
+      "reasoning": "Model 3 Fremont MY2023: all HW3. The Highland refresh with HW4 was manufactured at Shanghai (starting Sept 2023) but did not reach Fremont production in MY2023."
+    },
+    {
+      "model": "3",
+      "plant": "Fremont",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Fremont MY2024: Highland refresh introduced HW4. All MY2024 Model 3 from Fremont include HW4."
+    },
+    {
+      "model": "3",
+      "plant": "Fremont",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Fremont MY2025: HW4 standard continues."
+    },
+    {
+      "model": "3",
+      "plant": "Fremont",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model 3 Fremont MY2026: HW4 expected to continue. MEDIUM confidence as very recent."
+    },
+    {
+      "model": "3",
+      "plant": "Shanghai",
+      "modelYear": 2020,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Shanghai (LRW WMI) MY2020: all HW3. HW4 not in production."
+    },
+    {
+      "model": "3",
+      "plant": "Shanghai",
+      "modelYear": 2021,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Shanghai MY2021: all HW3."
+    },
+    {
+      "model": "3",
+      "plant": "Shanghai",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Shanghai MY2022: all HW3. Highland did not start until Sept 2023."
+    },
+    {
+      "model": "3",
+      "plant": "Shanghai",
+      "modelYear": 2023,
+      "verdict": "maybe",
+      "source": "electrive-highland",
+      "confidence": "medium",
+      "reasoning": "Model 3 Shanghai MY2023: maybe. Highland refresh began at Giga Shanghai in September 2023. Early-year (pre-Sept 2023) units are HW3; later units may be HW4. No reliable serial-range cutoff available. Check Software screen."
+    },
+    {
+      "model": "3",
+      "plant": "Shanghai",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Shanghai MY2024: all Highland with HW4. Full production year of the Highland refresh at Shanghai."
+    },
+    {
+      "model": "3",
+      "plant": "Shanghai",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model 3 Shanghai MY2025: HW4 standard continues."
+    },
+    {
+      "model": "3",
+      "plant": "Shanghai",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model 3 Shanghai MY2026: HW4 expected. MEDIUM confidence as very recent production."
+    },
+    {
+      "model": "S",
+      "plant": "Fremont",
+      "modelYear": 2020,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model S Fremont MY2020: all HW3. HW4 did not exist in production in 2020."
+    },
+    {
+      "model": "S",
+      "plant": "Fremont",
+      "modelYear": 2021,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model S Fremont MY2021: all HW3. Plaid refresh launched 2021 but still HW3."
+    },
+    {
+      "model": "S",
+      "plant": "Fremont",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model S Fremont MY2022: all HW3."
+    },
+    {
+      "model": "S",
+      "plant": "Fremont",
+      "modelYear": 2023,
+      "verdict": "maybe",
+      "source": "tmc-hw4-thread",
+      "confidence": "low",
+      "reasoning": "Model S Fremont MY2023: maybe — LOW confidence. Community reports indicate Model S began receiving HW4 at some point during MY2023 production, but the serial-range boundary is not reliably documented. Whole-year maybe is the conservative choice."
+    },
+    {
+      "model": "S",
+      "plant": "Fremont",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model S Fremont MY2024: expected all-HW4. MEDIUM confidence — less well-documented than Model 3/Y transitions."
+    },
+    {
+      "model": "S",
+      "plant": "Fremont",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model S Fremont MY2025: HW4 continues."
+    },
+    {
+      "model": "S",
+      "plant": "Fremont",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model S Fremont MY2026: HW4 continues. MEDIUM confidence as very recent."
+    },
+    {
+      "model": "X",
+      "plant": "Fremont",
+      "modelYear": 2020,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model X Fremont MY2020: all HW3. HW4 did not exist in production in 2020."
+    },
+    {
+      "model": "X",
+      "plant": "Fremont",
+      "modelYear": 2021,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model X Fremont MY2021: all HW3. Plaid refresh launched 2021 with HW3."
+    },
+    {
+      "model": "X",
+      "plant": "Fremont",
+      "modelYear": 2022,
+      "verdict": "no",
+      "source": "tmc-hw4-thread",
+      "confidence": "high",
+      "reasoning": "Model X Fremont MY2022: all HW3."
+    },
+    {
+      "model": "X",
+      "plant": "Fremont",
+      "modelYear": 2023,
+      "verdict": "maybe",
+      "source": "tmc-hw4-thread",
+      "confidence": "low",
+      "reasoning": "Model X Fremont MY2023: maybe — LOW confidence. Community reports suggest Model X began receiving HW4 during MY2023 similar to Model S. Serial-range boundary not reliably documented. Conservative whole-year maybe."
+    },
+    {
+      "model": "X",
+      "plant": "Fremont",
+      "modelYear": 2024,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model X Fremont MY2024: expected all-HW4. MEDIUM confidence."
+    },
+    {
+      "model": "X",
+      "plant": "Fremont",
+      "modelYear": 2025,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model X Fremont MY2025: HW4 continues."
+    },
+    {
+      "model": "X",
+      "plant": "Fremont",
+      "modelYear": 2026,
+      "verdict": "yes",
+      "source": "tmc-hw4-thread",
+      "confidence": "medium",
+      "reasoning": "Model X Fremont MY2026: HW4 continues. MEDIUM confidence as very recent."
+    }
+  ]
+}
