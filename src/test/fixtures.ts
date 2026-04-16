@@ -18,7 +18,7 @@ import { TRANSLITERATION_MAP, CHECK_DIGIT_WEIGHTS } from '../data/vinMeta'
 export interface MakeVinOptions {
   /** 3-char WMI, e.g. '5YJ'. */
   wmi: string
-  /** Position 4 (index 3): model code. Default '3'. */
+  /** Position 4 (index 3): model code. Default 'Y' (Model Y — most common in 2020+ Teslas). */
   pos4?: string
   /** Position 5 (index 4): body. Default 'A'. */
   pos5?: string
@@ -46,7 +46,7 @@ export interface MakeVinOptions {
 export function makeVin(opts: MakeVinOptions): string {
   const partial =
     opts.wmi +
-    (opts.pos4 ?? '3') +
+    (opts.pos4 ?? 'Y') +
     (opts.pos5 ?? 'A') +
     (opts.pos6 ?? '0') +
     (opts.pos7 ?? '1') +
@@ -104,7 +104,7 @@ export const REAL_VINS = {
    */
   fremonModelY2023: makeVin({
     wmi: '5YJ',
-    pos4: '3',
+    pos4: 'Y',
     pos5: 'A',
     pos6: '0',
     pos7: '1',

@@ -132,29 +132,51 @@ export const WMI_TO_MARKET: Record<TeslaWMI, Market> = {
 // ---------------------------------------------------------------------------
 
 /**
- * Best-effort default model for each WMI.
- *
- * Tesla uses WMI + position 4 to distinguish models within the same WMI.
- * This map provides a fallback when position-4 decoding is not yet implemented.
- * Phase 2's parseVin() should decode position 4 for precise model identification.
- *
- * Known position-4 model codes (community-sourced via TeslaTap, MEDIUM confidence):
- *   5YJ WMI: E=Model S, 3=Model 3, 7=Model X (some years), Y=Model Y (some years)
- *   7SA WMI: X=Model X, Y=Model Y (introduced ~2021)
- *   LRW WMI: 3=Model 3, E=Model Y (varies by year)
- *   XP7 WMI: Y=Model Y (Giga Berlin)
- *   SFZ WMI: Y=Model Y (Giga Berlin variant)
- *   7G2 WMI: W=Cybertruck
- *
- * This is a simplified map; Phase 2 implements the full position-4 decode.
+ * Fallback default model for each WMI when position-4 code is unrecognized.
  */
 export const WMI_TO_DEFAULT_MODEL: Record<TeslaWMI, TeslaModel> = {
-  '5YJ': 'Y', // most common in 5YJ range 2020+; Phase 2 refines with pos-4
-  '7SA': 'Y', // 7SA predominantly Model X/Y post-2021
-  LRW: 'Y', // Shanghai; Phase 2 refines with pos-4
-  XP7: 'Y', // Berlin Model Y
-  SFZ: 'Y', // Berlin Model Y variant
-  '7G2': 'Cybertruck', // Austin Cybertruck — unambiguous
+  '5YJ': 'Y',
+  '7SA': 'Y',
+  LRW: 'Y',
+  XP7: 'Y',
+  SFZ: 'Y',
+  '7G2': 'Cybertruck',
+}
+
+/**
+ * (WMI, position-4 char) → TeslaModel lookup.
+ * Source: TeslaTap community decoder + NHTSA filings (MEDIUM confidence).
+ *
+ * Position 4 (index 3) is Tesla's internal model code within a WMI.
+ * Lookup order: WMI_POS4_MODEL_MAP[wmi][pos4] → WMI_TO_DEFAULT_MODEL[wmi].
+ */
+export const WMI_POS4_MODEL_MAP: Partial<Record<TeslaWMI, Record<string, TeslaModel>>> = {
+  '5YJ': {
+    E: 'S', // Model S (older 5YJ VINs)
+    S: 'S', // Model S (some newer VINs)
+    '3': '3', // Model 3
+    '7': 'X', // Model X (older 5YJ VINs)
+    X: 'X', // Model X
+    Y: 'Y', // Model Y
+  },
+  '7SA': {
+    X: 'X', // Model X (post-2021)
+    Y: 'Y', // Model Y (post-2021)
+  },
+  LRW: {
+    '3': '3', // Model 3 Shanghai
+    E: 'Y', // Model Y Shanghai (some years use E)
+    Y: 'Y', // Model Y Shanghai
+  },
+  XP7: {
+    Y: 'Y', // Model Y Berlin
+  },
+  SFZ: {
+    Y: 'Y', // Model Y Berlin variant
+  },
+  '7G2': {
+    W: 'Cybertruck', // Cybertruck Austin
+  },
 }
 
 // ---------------------------------------------------------------------------

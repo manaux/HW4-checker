@@ -24,6 +24,7 @@ import {
   PLANT_CODE_MAP,
   WMI_TO_MARKET,
   WMI_TO_DEFAULT_MODEL,
+  WMI_POS4_MODEL_MAP,
   TRANSLITERATION_MAP,
   CHECK_DIGIT_WEIGHTS,
   POS_WMI_END,
@@ -32,6 +33,7 @@ import {
   POS_PLANT,
   POS_SERIAL_START,
   POS_SERIAL_END,
+  POS_MODEL_CODE,
 } from '../data/vinMeta'
 
 // ---------------------------------------------------------------------------
@@ -192,9 +194,9 @@ export function validateVin(raw: string): ValidationResult {
  * This function assumes vin is 17 characters, uppercased, no I/O/Q, valid Tesla WMI.
  * Behavior on invalid input is undefined.
  *
- * Model decode strategy (v1): WMI_TO_DEFAULT_MODEL provides a best-effort default.
- * TODO(phase-2.5): Implement full (WMI, pos-4) → model lookup for accurate
- *   Model S/X/3 vs Y discrimination within shared WMIs (5YJ, 7SA, LRW).
+ * Model decode: uses (WMI, position-4) lookup via WMI_POS4_MODEL_MAP for accurate
+ * model discrimination (Model S/X/3/Y within shared WMIs). Falls back to
+ * WMI_TO_DEFAULT_MODEL if the position-4 code is unrecognized.
  *
  * @param vin 17-character normalized VIN (from validateVin result).
  * @returns ParsedVin with all decoded fields.
@@ -205,7 +207,10 @@ export function parseVin(vin: string): ParsedVin {
   const plantCode = vin[POS_PLANT]
   const serial = vin.slice(POS_SERIAL_START, POS_SERIAL_END)
 
-  const model = WMI_TO_DEFAULT_MODEL[wmi]
+  // Position-4 model decode with WMI-default fallback
+  const pos4 = vin[POS_MODEL_CODE]
+  const pos4Map = WMI_POS4_MODEL_MAP[wmi]
+  const model = pos4Map?.[pos4] ?? WMI_TO_DEFAULT_MODEL[wmi]
   const modelYear = MODEL_YEAR_MAP[modelYearChar] ?? 0
   const market = WMI_TO_MARKET[wmi]
   const plant = PLANT_CODE_MAP[plantCode] ?? plantCode // fallback: raw code if unmapped

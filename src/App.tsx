@@ -117,28 +117,30 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-(--color-bg) text-(--color-text-primary) flex flex-col items-center px-4 py-8 sm:py-12">
-      <main className="w-full max-w-lg flex flex-col gap-8">
+      <main className="w-full max-w-2xl flex flex-col gap-8">
         {/* Header */}
         <header className="flex flex-col gap-1 text-center">
           <h1 className="text-3xl font-bold tracking-tight">HW4 Checker</h1>
           <p className="text-(--color-text-secondary) text-base">Tesla VIN hardware checker</p>
         </header>
 
-        {/* Recent VINs — above input, acts like suggestions */}
-        <RecentVins
-          entries={recentVins}
-          onSelect={handleRecentSelect}
-          visible={inputValue === ''}
-        />
-
         {/* VIN input + Check button */}
         <VinInput
           value={inputValue}
-          onChange={setInputValue}
+          onChange={(val) => {
+            setInputValue(val)
+            // Clear validation error as user types (issue #8)
+            if (validationResult && !validationResult.ok) {
+              setValidationResult(null)
+            }
+          }}
           onSubmit={() => handleSubmit(inputValue)}
           validationError={firstError}
           validationWarning={firstWarning}
         />
+
+        {/* Recent VINs — below input, always visible */}
+        <RecentVins entries={recentVins} onSelect={handleRecentSelect} />
 
         {/* Result region — only when we have a successful decode */}
         {hw4Result !== null && parsed !== null && (
