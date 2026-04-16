@@ -30,6 +30,7 @@ import DecodedInfo from './components/DecodedInfo'
 import Hw4Verdict from './components/Hw4Verdict'
 import CarImage from './components/CarImage'
 import RecentVins from './components/RecentVins'
+import { AnimatePresence, motion } from 'motion/react'
 
 const hw4Rules = hw4RulesRaw as HW4RulesFile
 const LS_KEY = 'hw4checker.recentVins'
@@ -144,11 +145,21 @@ export default function App() {
 
         {/* Result region — only when we have a successful decode */}
         {hw4Result !== null && parsed !== null && (
-          <section aria-label="Decode result" className="flex flex-col gap-6">
-            <Hw4Verdict result={hw4Result} sources={hw4Rules._sources} />
-            <DecodedInfo parsed={parsed} />
-            <CarImage model={parsed.model} verdict={hw4Result.verdict} />
-          </section>
+          <AnimatePresence mode="sync">
+            <motion.div
+              key={parsed.vin}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            >
+              <section aria-label="Decode result" className="flex flex-col gap-6">
+                <Hw4Verdict result={hw4Result} sources={hw4Rules._sources} />
+                <DecodedInfo parsed={parsed} />
+                <CarImage model={parsed.model} verdict={hw4Result.verdict} />
+              </section>
+            </motion.div>
+          </AnimatePresence>
         )}
 
         {/* Footer info blocks (kept from Phase 1 shell) */}
