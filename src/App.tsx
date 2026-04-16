@@ -156,7 +156,11 @@ export default function App() {
               <section aria-label="Decode result" className="flex flex-col gap-6">
                 <Hw4Verdict result={hw4Result} sources={hw4Rules._sources} />
                 <DecodedInfo parsed={parsed} />
-                <CarImage model={parsed.model} verdict={hw4Result.verdict} />
+                <CarImage
+                  model={parsed.model}
+                  modelYear={parsed.modelYear}
+                  verdict={hw4Result.verdict}
+                />
               </section>
             </motion.div>
           </AnimatePresence>
