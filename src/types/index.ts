@@ -161,3 +161,25 @@ export interface Hw4Result {
    */
   caveat?: string
 }
+
+// ---------------------------------------------------------------------------
+// Phase 3: Recent VINs (localStorage persistence)
+// ---------------------------------------------------------------------------
+
+/**
+ * A single entry in the recent-VINs localStorage list.
+ *
+ * status: 'ok'      → decode succeeded; model and verdict are present
+ * status: 'invalid' → validation failed; model and verdict are absent
+ */
+export interface RecentVinEntry {
+  /** Full 17-character normalized VIN (uppercase). */
+  vin: string
+  status: 'ok' | 'invalid'
+  /** Decoded model — present only when status === 'ok'. */
+  model?: TeslaModel
+  /** HW4 verdict — present only when status === 'ok'. */
+  verdict?: Hw4Verdict
+  /** Unix timestamp (Date.now()) when this VIN was submitted. */
+  timestamp: number
+}
