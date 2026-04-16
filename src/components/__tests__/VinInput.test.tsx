@@ -3,16 +3,24 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import VinInput from '../VinInput'
 
+const defaultProps = {
+  value: '',
+  onChange: vi.fn(),
+  onSubmit: vi.fn(),
+  recentVins: [],
+  onSelectRecent: vi.fn(),
+}
+
 describe('VinInput', () => {
   it('renders with empty value and shows 0/17 counter', () => {
-    render(<VinInput value="" onChange={vi.fn()} onSubmit={vi.fn()} />)
+    render(<VinInput {...defaultProps} />)
     expect(screen.getByRole('textbox')).toBeInTheDocument()
     expect(screen.getByText('0 / 17')).toBeInTheDocument()
   })
 
   it('filters I, O, Q characters on change', async () => {
     const onChange = vi.fn()
-    render(<VinInput value="" onChange={onChange} onSubmit={vi.fn()} />)
+    render(<VinInput {...defaultProps} onChange={onChange} />)
     const input = screen.getByRole('textbox')
     await userEvent.type(input, 'IOQ5YJ')
     // Each character fires onChange; the last call should have no I/O/Q
@@ -22,7 +30,7 @@ describe('VinInput', () => {
 
   it('calls onSubmit when Enter is pressed', async () => {
     const onSubmit = vi.fn()
-    render(<VinInput value="ABC" onChange={vi.fn()} onSubmit={onSubmit} />)
+    render(<VinInput {...defaultProps} value="ABC" onSubmit={onSubmit} />)
     await userEvent.type(screen.getByRole('textbox'), '{Enter}')
     expect(onSubmit).toHaveBeenCalledTimes(1)
   })

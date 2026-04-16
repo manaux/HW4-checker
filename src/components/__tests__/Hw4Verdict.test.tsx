@@ -42,16 +42,16 @@ const maybeResult: Hw4Result = {
 }
 
 describe('Hw4Verdict', () => {
-  it('renders green "Definitely yes" badge for a yes verdict', () => {
+  it('renders green "Definitely has HW4" badge for a yes verdict', () => {
     render(<Hw4Verdict result={yesResult} sources={testSources} />)
-    expect(screen.getByText('Definitely yes')).toBeInTheDocument()
+    expect(screen.getByText('Definitely has HW4')).toBeInTheDocument()
     expect(screen.queryByText(/retrofit/i)).not.toBeInTheDocument()
   })
 
-  it('renders amber "Maybe" badge and software-screen caveat for a maybe verdict', () => {
+  it('renders amber "Not sure" badge and software-screen caveat for a maybe verdict', () => {
     render(<Hw4Verdict result={maybeResult} sources={testSources} />)
-    expect(screen.getByText(/Maybe/)).toBeInTheDocument()
-    // Caveat text (partial match — bold markup rendered as text)
+    expect(screen.getByText(/Not sure about HW4/)).toBeInTheDocument()
+    // Caveat text (partial match — bold markup rendered as <strong>)
     expect(screen.getByText(/Controls/)).toBeInTheDocument()
   })
 })

@@ -22,10 +22,10 @@ function verdictColorClass(verdict: Hw4VerdictType): string {
 /** Maps a verdict to a short human-readable label. */
 function verdictLabel(verdict: Hw4VerdictType): string {
   return verdict === 'yes'
-    ? 'Definitely yes'
+    ? 'Definitely has HW4'
     : verdict === 'no'
-      ? 'Definitely not'
-      : 'Maybe — check Software screen'
+      ? 'Definitely not HW4'
+      : 'Not sure about HW4 — check Software screen'
 }
 
 /** Maps confidence to a color class. */
@@ -87,7 +87,7 @@ export default function Hw4Verdict({ result, sources }: Hw4VerdictProps) {
     <div className="flex flex-col gap-4">
       {/* Verdict badge */}
       <div
-        className={`text-2xl font-bold tracking-tight ${colorClass}`}
+        className={`text-2xl font-bold text-center tracking-tight ${colorClass}`}
         role="status"
         aria-live="polite"
       >

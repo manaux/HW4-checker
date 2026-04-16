@@ -29,7 +29,6 @@ import VinInput from './components/VinInput'
 import DecodedInfo from './components/DecodedInfo'
 import Hw4Verdict from './components/Hw4Verdict'
 import CarImage from './components/CarImage'
-import RecentVins from './components/RecentVins'
 import { AnimatePresence, motion } from 'motion/react'
 
 const hw4Rules = hw4RulesRaw as HW4RulesFile
@@ -130,7 +129,7 @@ export default function App() {
           value={inputValue}
           onChange={(val) => {
             setInputValue(val)
-            // Clear validation error as user types (issue #8)
+            // Clear validation error as user types
             if (validationResult && !validationResult.ok) {
               setValidationResult(null)
             }
@@ -138,10 +137,9 @@ export default function App() {
           onSubmit={() => handleSubmit(inputValue)}
           validationError={firstError}
           validationWarning={firstWarning}
+          recentVins={recentVins}
+          onSelectRecent={handleRecentSelect}
         />
-
-        {/* Recent VINs — below input, always visible */}
-        <RecentVins entries={recentVins} onSelect={handleRecentSelect} />
 
         {/* Result region — only when we have a successful decode */}
         {hw4Result !== null && parsed !== null && (
@@ -175,25 +173,11 @@ export default function App() {
             >
               Why HW4 matters
             </h2>
-            <p className="text-sm leading-relaxed text-(--color-text-secondary)">
+            <p className="text-sm leading-relaxed text-(--color-text-primary)">
               Hardware 4 is Tesla&apos;s latest autopilot compute platform. Whether your car has HW4
               or the older HW3 affects which Autopilot and Full Self-Driving features are available
               now and in the future. This tool tells you which hardware your VIN was manufactured
               with.
-            </p>
-          </section>
-
-          <section aria-labelledby="privacy-heading">
-            <h2
-              id="privacy-heading"
-              className="text-sm font-semibold uppercase tracking-wide text-(--color-text-secondary) mb-2"
-            >
-              Your privacy
-            </h2>
-            <p className="text-sm leading-relaxed text-(--color-text-secondary)">
-              Your VIN never leaves your browser. All decoding and verdict logic runs entirely
-              locally using data bundled with this page — no network requests are made, and nothing
-              is stored or transmitted to any server.
             </p>
           </section>
 
@@ -204,14 +188,28 @@ export default function App() {
             >
               About this data
             </h2>
-            <p className="text-sm leading-relaxed text-(--color-text-secondary)">
+            <p className="text-sm leading-relaxed text-(--color-text-primary)">
               HW4 cutoff data is based on public community research and is provided as-is. Near
               production boundaries the verdict may be &ldquo;Maybe&rdquo; — if the result matters
               (e.g. for a purchase decision) verify by checking{' '}
-              <span className="text-(--color-text-primary)">
+              <span className="text-(--color-accent)">
                 Controls &gt; Software &gt; Additional Vehicle Information
               </span>{' '}
               in the car.
+            </p>
+          </section>
+
+          <section aria-labelledby="privacy-heading">
+            <h2
+              id="privacy-heading"
+              className="text-sm font-semibold uppercase tracking-wide text-(--color-text-secondary) mb-2"
+            >
+              Your privacy
+            </h2>
+            <p className="text-sm leading-relaxed text-(--color-text-primary)">
+              Your VIN never leaves your browser. All decoding and verdict logic runs entirely
+              locally using data bundled with this page — no network requests are made, and nothing
+              is stored or transmitted to any server.
             </p>
           </section>
         </div>

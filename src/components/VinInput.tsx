@@ -1,11 +1,12 @@
 /**
- * VinInput — controlled VIN text field with inline clear button, Check VIN button
- * on the same row, length counter + error on one line, and submit affordances.
- *
- * Stateless: all state lives in the parent <App />.
+ * VinInput — controlled VIN text field with inline clear button, Check VIN button,
+ * length counter + error display, and a recent-VINs dropdown that appears on focus
+ * when the input is empty (like search suggestions).
  */
-import type { ValidationError, ValidationWarning } from '../types/index'
+import { useState, useRef, useEffect } from 'react'
+import type { ValidationError, ValidationWarning, RecentVinEntry, Hw4Verdict } from '../types/index'
 import { filterInvalidChars, normalizeVinInput } from '../lib/vin'
+import { modelDisplayName } from './CarImage'
 
 interface VinInputProps {
   value: string
@@ -13,10 +14,23 @@ interface VinInputProps {
   onSubmit: () => void
   validationError?: ValidationError
   validationWarning?: ValidationWarning
+  recentVins: RecentVinEntry[]
+  onSelectRecent: (vin: string) => void
   disabled?: boolean
 }
 
 const VIN_LENGTH = 17
+
+function verdictLabel(verdict: Hw4Verdict): { text: string; className: string } {
+  switch (verdict) {
+    case 'yes':
+      return { text: 'HW4', className: 'text-emerald-400' }
+    case 'no':
+      return { text: 'Not HW4', className: 'text-rose-400' }
+    case 'maybe':
+      return { text: 'Maybe', className: 'text-amber-400' }
+  }
+}
 
 export default function VinInput({
   value,
@@ -24,9 +38,27 @@ export default function VinInput({
   onSubmit,
   validationError,
   validationWarning,
+  recentVins,
+  onSelectRecent,
   disabled = false,
 }: VinInputProps) {
   const atLength = value.length === VIN_LENGTH
+  const [isFocused, setIsFocused] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const showDropdown = isFocused && value.length === 0 && recentVins.length > 0
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!showDropdown) return
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsFocused(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showDropdown])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(filterInvalidChars(e.target.value.toUpperCase()))
@@ -40,6 +72,11 @@ export default function VinInput({
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter' && !disabled) onSubmit()
+  }
+
+  function handleSelectRecent(vin: string) {
+    setIsFocused(false)
+    onSelectRecent(vin)
   }
 
   const errorId = 'vin-error'
@@ -58,7 +95,7 @@ export default function VinInput({
       </label>
 
       {/* Input row: input with clear button + Check VIN button on same line */}
-      <div className="flex gap-2">
+      <div className="flex gap-2" ref={containerRef}>
         <div className="relative flex-1">
           <input
             id="vin-input"
@@ -67,6 +104,7 @@ export default function VinInput({
             onChange={handleChange}
             onPaste={handlePaste}
             onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
             disabled={disabled}
             placeholder="Paste your 17-character VIN here"
             inputMode="text"
@@ -104,6 +142,44 @@ export default function VinInput({
               </svg>
             </button>
           )}
+
+          {/* Recent VINs dropdown — appears on focus when input is empty */}
+          {showDropdown && (
+            <div className="absolute left-0 right-0 top-full mt-1 z-10 rounded-lg border border-white/10 bg-neutral-900 shadow-lg overflow-hidden">
+              <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-(--color-text-secondary) border-b border-white/5">
+                Recent
+              </div>
+              {recentVins.map((entry) => (
+                <button
+                  key={entry.vin}
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault() // prevent blur before click registers
+                    handleSelectRecent(entry.vin)
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-white/5 transition-colors"
+                >
+                  <span className="font-mono text-(--color-text-primary) text-xs">{entry.vin}</span>
+                  <span className="flex items-center gap-2 text-xs">
+                    {entry.status === 'ok' && entry.model && entry.verdict ? (
+                      <>
+                        <span className="text-(--color-text-secondary)">
+                          {modelDisplayName(entry.model)}
+                        </span>
+                        <span className={verdictLabel(entry.verdict).className}>
+                          {verdictLabel(entry.verdict).text}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-(--color-text-secondary) opacity-50 italic">
+                        invalid
+                      </span>
+                    )}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <button
@@ -126,14 +202,12 @@ export default function VinInput({
           {value.length} / {VIN_LENGTH}
         </p>
 
-        {/* Validation error — right-aligned */}
         {validationError && (
           <p id={errorId} role="alert" className="text-rose-400 text-right">
             {validationError.message}
           </p>
         )}
 
-        {/* Soft check-digit warning — right-aligned */}
         {validationWarning && !validationError && (
           <p id={warningId} className="text-amber-400 text-right">
             {validationWarning.message}

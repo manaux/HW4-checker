@@ -44,12 +44,12 @@ describe('App', () => {
     const input = screen.getByRole('textbox')
     await userEvent.type(input, CYBERTRUCK_VIN)
     await userEvent.click(screen.getByRole('button', { name: /check vin/i }))
-    expect(await screen.findByText('Definitely yes')).toBeInTheDocument()
+    expect(await screen.findByText('Definitely has HW4')).toBeInTheDocument()
   })
 
   it('auto-decodes a valid VIN from the ?vin= URL parameter on mount', async () => {
     history.replaceState(null, '', `?vin=${CYBERTRUCK_VIN}`)
     render(<App />)
-    expect(await screen.findByText('Definitely yes')).toBeInTheDocument()
+    expect(await screen.findByText('Definitely has HW4')).toBeInTheDocument()
   })
 })
