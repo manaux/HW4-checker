@@ -17,8 +17,6 @@ The verdict comes back in one of three flavors: definitely yes, definitely no, o
 
 ![Screenshot](screenshot.png)
 
-_Screenshot coming after first deploy_
-
 ---
 
 ## Privacy
