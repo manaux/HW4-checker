@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" fill="currentColor">
+  <defs>
+    <mask id="wheels-3">
+      <rect width="400" height="160" fill="white"/>
+      <circle cx="100" cy="115" r="17" fill="black"/>
+      <circle cx="300" cy="115" r="17" fill="black"/>
+    </mask>
+  </defs>
+  <!-- Body: compact sedan, more upright rear slope, shorter hood -->
+  <path mask="url(#wheels-3)" d="
+    M 32 132 L 32 104
+    Q 32 98 38 96
+    L 68 96
+    Q 80 66 104 54
+    Q 130 42 172 40
+    Q 212 38 246 43
+    Q 278 48 296 62
+    Q 310 72 316 86
+    L 360 86
+    Q 368 86 368 94
+    L 368 132 Z
+  "/>
+  <!-- Front tyre -->
+  <circle cx="100" cy="115" r="20" fill="none" stroke="currentColor" stroke-width="6"/>
+  <circle cx="100" cy="115" r="8"  fill="none" stroke="currentColor" stroke-width="2.5"/>
+  <!-- Rear tyre -->
+  <circle cx="300" cy="115" r="20" fill="none" stroke="currentColor" stroke-width="6"/>
+  <circle cx="300" cy="115" r="8"  fill="none" stroke="currentColor" stroke-width="2.5"/>
+  <!-- Ground line -->
+  <rect x="24" y="134" width="352" height="3" rx="1.5" opacity="0.4"/>
+</svg>

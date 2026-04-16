@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 160" fill="currentColor">
+  <defs>
+    <mask id="wheels-ct">
+      <rect width="440" height="160" fill="white"/>
+      <circle cx="100" cy="118" r="18" fill="black"/>
+      <circle cx="340" cy="118" r="18" fill="black"/>
+    </mask>
+  </defs>
+  <!-- Body: pure wedge. Straight lines everywhere. Front is a sharp point low to ground. -->
+  <!-- Cab section: sloped front windscreen (straight line), flat roof, vertical rear -->
+  <!-- Bed section: flat top, angled tailgate, higher ground clearance than cab floor -->
+  <path mask="url(#wheels-ct)" d="
+    M 40 136
+    L 40 118
+    L 60 118
+    L 60 100
+    L 72 72
+    L 180 52
+    L 180 44
+    L 290 44
+    L 290 80
+    L 418 80
+    L 418 100
+    L 420 118
+    L 380 118
+    L 380 136 Z
+  "/>
+  <!-- Front tyre (larger — Cybertruck has big off-road wheels) -->
+  <circle cx="100" cy="118" r="22" fill="none" stroke="currentColor" stroke-width="7"/>
+  <circle cx="100" cy="118" r="9"  fill="none" stroke="currentColor" stroke-width="3"/>
+  <!-- Rear tyre -->
+  <circle cx="340" cy="118" r="22" fill="none" stroke="currentColor" stroke-width="7"/>
+  <circle cx="340" cy="118" r="9"  fill="none" stroke="currentColor" stroke-width="3"/>
+  <!-- Ground line -->
+  <rect x="20" y="138" width="400" height="3" rx="1.5" opacity="0.4"/>
+</svg>
