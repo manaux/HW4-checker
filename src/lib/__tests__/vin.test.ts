@@ -268,7 +268,7 @@ describe('parseVin — field extraction', () => {
     expect(parsed.plant).toBe('Fremont') // PLANT_CODE_MAP['F']
     expect(parsed.plantCode).toBe('F')
     expect(parsed.serial).toBe('789500')
-    expect(parsed.trim).toBe('Long Range') // TRIM_MAP['F']
+    expect(parsed.trim).toBe('Long Range RWD') // WMI_TRIM['5YJ']['F']
   })
 
   it('Berlin Model Y MY2024 (plant code B)', () => {

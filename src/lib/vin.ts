@@ -218,7 +218,7 @@ export function parseVin(vin: string): ParsedVin {
   // Trim from position 8 (0-indexed 7) — motor/trim variant
   // Only a handful of codes are documented; return undefined for unrecognized codes
   const trimCode = vin[7]
-  const trim = decodeTrim(trimCode)
+  const trim = decodeTrim(trimCode, wmi)
 
   return { vin, model, modelYear, market, plant, plantCode, trim, serial }
 }
@@ -226,15 +226,48 @@ export function parseVin(vin: string): ParsedVin {
 /**
  * Decodes VIN position 8 (0-indexed 7) to a trim/variant string.
  * Source: TeslaTap community decoder (MEDIUM confidence).
+ *
+ * Position-8 meaning varies by WMI — a flat map is incorrect.
+ * The lookup is keyed on (wmi, code) with a generic fallback.
  * Returns undefined for unrecognized codes.
  */
-function decodeTrim(code: string): string | undefined {
-  const TRIM_MAP: Record<string, string> = {
-    E: 'Standard Range',
-    F: 'Long Range',
-    G: 'Long Range AWD',
-    P: 'Performance',
-    // Cybertruck codes are unknown; WMI fast-path doesn't use trim
+function decodeTrim(code: string, wmi: string): string | undefined {
+  // WMI-specific overrides (position-8 meaning differs between WMIs)
+  const WMI_TRIM: Record<string, Record<string, string>> = {
+    '5YJ': {
+      A: 'Standard Range Plus',
+      B: 'Standard Range Plus',
+      E: 'Standard Range',
+      F: 'Long Range RWD',
+      G: 'Long Range AWD',
+      H: 'High Performance',
+      P: 'Performance',
+    },
+    '7SA': {
+      D: 'Standard Range',
+      E: 'Long Range AWD',
+      G: 'Performance',
+      P: 'Performance',
+    },
+    LRW: {
+      A: 'Standard Range Plus',
+      C: 'Standard Range',
+      E: 'Standard Range',
+      F: 'Long Range',
+      G: 'Long Range AWD',
+      P: 'Performance',
+    },
+    XP7: {
+      E: 'Standard Range',
+      G: 'Long Range AWD',
+      P: 'Performance',
+    },
+    SFZ: {
+      E: 'Standard Range',
+      G: 'Long Range AWD',
+      P: 'Performance',
+    },
   }
-  return TRIM_MAP[code]
+
+  return WMI_TRIM[wmi]?.[code]
 }
