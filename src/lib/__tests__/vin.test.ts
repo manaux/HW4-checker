@@ -313,4 +313,15 @@ describe('parseVin — field extraction', () => {
     const vin = makeVin({ wmi: '5YJ', modelYearChar: 'P', plantCode: 'F', serial: '001234' })
     expect(parseVin(vin).serial).toBe('001234')
   })
+
+  it('5YJ Model Y pos8=E → Long Range AWD (not Standard Range)', () => {
+    // Model Y (pos4='Y') encodes trim 'E' as Long Range AWD.
+    // Model 3 (pos4='3') encodes the same 'E' as Standard Range.
+    // Regression: 5YJYGDEE5LF043183 was incorrectly shown as Standard Range.
+    const modelY = makeVin({ wmi: '5YJ', pos4: 'Y', pos8: 'E', modelYearChar: 'L', plantCode: 'F', serial: '043183' })
+    expect(parseVin(modelY).trim).toBe('Long Range AWD')
+
+    const model3 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'E', modelYearChar: 'L', plantCode: 'F', serial: '043183' })
+    expect(parseVin(model3).trim).toBe('Standard Range')
+  })
 })

@@ -218,7 +218,7 @@ export function parseVin(vin: string): ParsedVin {
   // Trim from position 8 (0-indexed 7) — motor/trim variant
   // Only a handful of codes are documented; return undefined for unrecognized codes
   const trimCode = vin[7]
-  const trim = decodeTrim(trimCode, wmi)
+  const trim = decodeTrim(trimCode, wmi, pos4)
 
   return { vin, model, modelYear, market, plant, plantCode, trim, serial }
 }
@@ -228,11 +228,24 @@ export function parseVin(vin: string): ParsedVin {
  * Source: TeslaTap community decoder (MEDIUM confidence).
  *
  * Position-8 meaning varies by WMI — a flat map is incorrect.
- * The lookup is keyed on (wmi, code) with a generic fallback.
- * Returns undefined for unrecognized codes.
+ * Within a single WMI it can also vary by model code (position 4).
+ * Lookup order: (wmi, modelCode, code) → (wmi, code) → undefined.
  */
-function decodeTrim(code: string, wmi: string): string | undefined {
-  // WMI-specific overrides (position-8 meaning differs between WMIs)
+function decodeTrim(code: string, wmi: string, modelCode: string): string | undefined {
+  // Model-code-specific overrides within a WMI.
+  // Within 5YJ, Model Y ('Y') encodes 'E' as Long Range AWD, not Standard Range.
+  const WMI_MODEL_TRIM: Record<string, Record<string, Record<string, string>>> = {
+    '5YJ': {
+      Y: {
+        E: 'Long Range AWD',
+        F: 'Long Range RWD',
+        G: 'Performance',
+        P: 'Performance',
+      },
+    },
+  }
+
+  // WMI-specific fallback (position-8 meaning differs between WMIs)
   const WMI_TRIM: Record<string, Record<string, string>> = {
     '5YJ': {
       A: 'Standard Range Plus',
@@ -269,5 +282,5 @@ function decodeTrim(code: string, wmi: string): string | undefined {
     },
   }
 
-  return WMI_TRIM[wmi]?.[code]
+  return WMI_MODEL_TRIM[wmi]?.[modelCode]?.[code] ?? WMI_TRIM[wmi]?.[code]
 }
