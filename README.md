@@ -31,6 +31,12 @@ The underlying HW4 data is community-sourced and provided **as-is**. It is reaso
 
 React 19 · TypeScript 6 (strict) · Vite 8 · Tailwind CSS v4 · Motion v12 · Vitest 4
 
+## Shortcut for macOS/iOS
+
+Send VIN to this app from macOS context menu or iPhone share menu: https://www.icloud.com/shortcuts/28c3cb86bedf404f83af8d01278c0032
+
+![Shortcut](mac-shortcut-demo.png)
+
 ## License
 
 [MIT](LICENSE)
