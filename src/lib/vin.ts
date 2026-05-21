@@ -17,7 +17,7 @@ import type {
   ValidationResult,
   ValidationError,
   ValidationWarning,
-} from '../types/index'
+} from '../types'
 import {
   TESLA_WMIS,
   MODEL_YEAR_MAP,
@@ -218,7 +218,7 @@ export function parseVin(vin: string): ParsedVin {
   // Trim from position 8 (0-indexed 7) — motor/trim variant
   // Only a handful of codes are documented; return undefined for unrecognized codes
   const trimCode = vin[7]
-  const trim = decodeTrim(trimCode, wmi, pos4)
+  const trim = decodeTrim(trimCode, wmi, pos4, modelYear)
 
   return { vin, model, modelYear, market, plant, plantCode, trim, serial }
 }
@@ -230,8 +230,28 @@ export function parseVin(vin: string): ParsedVin {
  * Position-8 meaning varies by WMI — a flat map is incorrect.
  * Within a single WMI it can also vary by model code (position 4).
  * Lookup order: (wmi, modelCode, code) → (wmi, code) → undefined.
+ *
+ * modelYear is used for year-aware disambiguation (e.g. 5YJ Model 3 code A/B
+ * was "Standard Range Plus" pre-2022; post-2022 it is plain "Standard Range").
  */
-function decodeTrim(code: string, wmi: string, modelCode: string): string | undefined {
+function decodeTrim(code: string, wmi: string, modelCode: string, modelYear: number): string | undefined {
+  // Year-aware overrides for 5YJ Model 3 codes A and B.
+  //
+  // MY2024+ = Highland refresh with a new trim lineup:
+  //   A → RWD  (Note: "Long Range RWD" shares this code and cannot be
+  //             distinguished from the base RWD by VIN alone.)
+  //   B → Long Range AWD (MY2024) / Premium AWD (MY2025+)
+  //
+  // MY2022–2023: Tesla retired the "Standard Range Plus" name; both codes → Standard Range.
+  // MY2019–2021: A/B were Standard Range Plus.
+  if (wmi === '5YJ' && modelCode === '3' && (code === 'A' || code === 'B')) {
+    if (modelYear >= 2024) {
+      if (code === 'A') return 'RWD'
+      return modelYear >= 2025 ? 'Premium AWD' : 'Long Range AWD'
+    }
+    return modelYear >= 2022 ? 'Standard Range' : 'Standard Range Plus'
+  }
+
   // Model-code-specific overrides within a WMI.
   // Within 5YJ, Model Y ('Y') encodes 'E' as Long Range AWD, not Standard Range.
   const WMI_MODEL_TRIM: Record<string, Record<string, Record<string, string>>> = {
@@ -258,7 +278,7 @@ function decodeTrim(code: string, wmi: string, modelCode: string): string | unde
     },
     '7SA': {
       D: 'Standard Range',
-      E: 'Long Range AWD',
+      E: 'AWD',
       G: 'Performance',
       P: 'Performance',
     },

@@ -324,4 +324,52 @@ describe('parseVin — field extraction', () => {
     const model3 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'E', modelYearChar: 'L', plantCode: 'F', serial: '043183' })
     expect(parseVin(model3).trim).toBe('Standard Range')
   })
+
+  it('5YJ Model 3 code A — year-aware trim ladder', () => {
+    // MY2019–2021: Standard Range Plus
+    const my2021 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'A', modelYearChar: 'M', plantCode: 'F', serial: '985183' })
+    expect(parseVin(my2021).trim).toBe('Standard Range Plus')
+
+    // MY2022–2023: "Plus" name retired → Standard Range
+    const my2022 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'A', modelYearChar: 'N', plantCode: 'F', serial: '985183' })
+    expect(parseVin(my2022).trim).toBe('Standard Range')
+
+    // MY2024+: Highland refresh — code A = RWD
+    // Note: "Long Range RWD" shares this VIN code and is indistinguishable from base RWD.
+    // Regression: 5YJ3E1EA5RF731608 shown as Standard Range Plus.
+    const my2024 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'A', modelYearChar: 'R', plantCode: 'F', serial: '731608' })
+    expect(parseVin(my2024).trim).toBe('RWD')
+
+    // Regression: 5YJ3E1EA0SF985183 shown as Standard Range Plus.
+    const my2025 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'A', modelYearChar: 'S', plantCode: 'F', serial: '985183' })
+    expect(parseVin(my2025).trim).toBe('RWD')
+  })
+
+  it('5YJ Model 3 code B — year-aware trim ladder', () => {
+    // MY2019–2021: Standard Range Plus
+    const my2021 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'B', modelYearChar: 'M', plantCode: 'F', serial: '000001' })
+    expect(parseVin(my2021).trim).toBe('Standard Range Plus')
+
+    // MY2022–2023: Standard Range
+    const my2023 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'B', modelYearChar: 'P', plantCode: 'F', serial: '000001' })
+    expect(parseVin(my2023).trim).toBe('Standard Range')
+
+    // MY2024: Highland — code B = Long Range AWD
+    // Regression: 5YJ3E1EB8RF758729 shown as Standard Range Plus.
+    const my2024 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'B', modelYearChar: 'R', plantCode: 'F', serial: '758729' })
+    expect(parseVin(my2024).trim).toBe('Long Range AWD')
+
+    // MY2025: renamed to Premium AWD
+    // Regression: 5YJ3E1EB2SF939430 shown as Standard Range Plus.
+    const my2025 = makeVin({ wmi: '5YJ', pos4: '3', pos8: 'B', modelYearChar: 'S', plantCode: 'F', serial: '939430' })
+    expect(parseVin(my2025).trim).toBe('Premium AWD')
+  })
+
+  it('7SA Model Y pos8=E → AWD (not Long Range AWD)', () => {
+    // Austin (7SA) Model Y dual-motor is plain "AWD" — no Long Range vs Standard
+    // Range split exists in the Austin lineup, so the "Long Range" prefix is wrong.
+    // Regression: 7SAYGDEE9PA149447 (MY2023) was shown as Long Range AWD.
+    const vin = makeVin({ wmi: '7SA', pos4: 'Y', pos8: 'E', modelYearChar: 'P', plantCode: 'A', serial: '149447' })
+    expect(parseVin(vin).trim).toBe('AWD')
+  })
 })
